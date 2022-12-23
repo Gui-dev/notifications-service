@@ -1,6 +1,6 @@
 import { Content } from './content'
 
-describe('Content class', () => {
+describe('Notification Content', () => {
   it('should not be able to create a notification content with less than 5 characters', () => {
     expect(() => new Content('AAA')).toThrow()
   })
