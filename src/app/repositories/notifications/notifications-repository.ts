@@ -1,4 +1,4 @@
-import { Notification } from './../../entities/notification/notification'
+import { Notification } from '@app/entities/notification/notification'
 
 
 export abstract class NotificationsRepository {

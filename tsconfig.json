@@ -9,6 +9,12 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@helpers/*": ["./src/helpers/*"],
+      "@infra/*": ["./src/infra/*"],
+      "@test/*": ["./test/*"]
+    },
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
