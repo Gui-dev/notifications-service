@@ -22,4 +22,15 @@ describe('Cancel Notification', () => {
     })
     expect(notificationsRepository.notifications[0].canceledAt).toEqual(expect.any(Date))
   })
+
+  it('should not be able to cancel a non existing notification', async () => {
+    const notificationsRepository = new InMemoryNotificationsRepository()
+    const cancelNotification = new CancelNotification(notificationsRepository)
+
+    expect(async () => {
+      return await cancelNotification.execute({
+        notificationId: 'fake-notification-id'
+      })
+    }).rejects.toThrow(NotificationNotFound)
+  })
 })
