@@ -1,12 +1,57 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
 
 import { CreateNotificationBody } from '../../dtos/create-notification-body'
 import { SendNotification } from '@app/use-cases/notifications/send-notification'
 import { NotificationView } from '@infra/http/views/notification-view'
+import { CancelNotification } from '@app/use-cases/notifications/cancel-notification'
+import { ReadNotification } from '@app/use-cases/notifications/read-notification'
+import { UnreadNotification } from '@app/use-cases/notifications/unread-notification'
+import { CountRecipientNotifications } from '@app/use-cases/notifications/count-recipient-notifications'
+import { GetRecipientNotifications } from '@app/use-cases/notifications/get-recipient-notifications'
 
 @Controller('notifications')
 export class NotificationController {
-  constructor(private readonly sendNotification: SendNotification) { }
+  constructor(
+    private readonly sendNotification: SendNotification,
+    private readonly cancelNotification: CancelNotification,
+    private readonly readNotification: ReadNotification,
+    private readonly unreadNotification: UnreadNotification,
+    private readonly countRecipientNotifications: CountRecipientNotifications,
+    private readonly getRecipientNotifications: GetRecipientNotifications
+  ) { }
+
+  @Get('count/from/:recipient_id')
+  public async countFromRecipient (@Param('recipient_id') recipient_id: string) {
+    const { count } = await this.countRecipientNotifications.execute({
+      recipientId: recipient_id
+    })
+
+    return { count }
+  }
+
+  @Get('from/:recipient_id')
+  public async getFromRecipient (@Param('recipient_id') recipient_id: string) {
+    const { notifications } = await this.getRecipientNotifications.execute({
+      recipientId: recipient_id
+    })
+    return {
+      notifications: notifications.map(NotificationView.toHTTP)
+    }
+  }
+
+  @Patch(':id/read')
+  public async read (@Param('id') id: string) {
+    await this.readNotification.execute({
+      notificationId: id
+    })
+  }
+
+  @Patch(':id/unread')
+  public async unread (@Param('id') id: string) {
+    await this.unreadNotification.execute({
+      notificationId: id
+    })
+  }
 
   @Post()
   public async create (@Body() body: CreateNotificationBody) {
@@ -22,4 +67,8 @@ export class NotificationController {
     }
   }
 
+  @Patch(':id/cancel')
+  public async cancel (@Param('id') id: string) {
+    await this.cancelNotification.execute({ notificationId: id })
+  }
 }
