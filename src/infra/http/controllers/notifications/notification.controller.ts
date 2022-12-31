@@ -20,19 +20,19 @@ export class NotificationController {
     private readonly getRecipientNotifications: GetRecipientNotifications
   ) { }
 
-  @Get('count/from/:recipient_id')
-  public async countFromRecipient (@Param('recipient_id') recipient_id: string) {
+  @Get('count/from/:recipientId')
+  public async countFromRecipient (@Param('recipientId') recipientId: string) {
     const { count } = await this.countRecipientNotifications.execute({
-      recipientId: recipient_id
+      recipientId
     })
 
     return { count }
   }
 
-  @Get('from/:recipient_id')
-  public async getFromRecipient (@Param('recipient_id') recipient_id: string) {
+  @Get('from/:recipientId')
+  public async getFromRecipient (@Param('recipientId') recipientId: string) {
     const { notifications } = await this.getRecipientNotifications.execute({
-      recipientId: recipient_id
+      recipientId
     })
     return {
       notifications: notifications.map(NotificationView.toHTTP)
